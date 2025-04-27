@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maelyn API | Free REST API for Bots and Web Applications</title>
+    <meta name="description" content="Free REST API for WhatsApp, Discord, Telegram bots and websites with AI chat, image generation, anime, comics, downloader tools and more.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --deep-blue: #030f28;
+            --medium-blue: #0a2250;
+            --light-blue: #1e3c7b;
+            --accent-blue: #3171d8;
+            --secondary-accent: #05d8e8;
+            --text-light: #f0f8ff;
+            --gradient-dark: linear-gradient(135deg, #030f28, #0a2250);
+            --gradient-light: linear-gradient(135deg, #1e3c7b, #3171d8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--deep-blue);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 80%, rgba(30, 60, 123, 0.2), rgba(3, 15, 40, 0));
+            z-index: -1;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 800 800'%3E%3Cg fill='none' stroke='%231e3c7b' stroke-width='1'%3E%3Cpath d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/%3E%3Cpath d='M-31 229L237 261 390 382 603 493 308.5 537.5 101.5 381.5M370 905L295 764'/%3E%3Cpath d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/%3E%3Cpath d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/%3E%3Cpath d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/%3E%3C/g%3E%3C/svg%3E");
+            animation: shift 120s linear infinite;
+            opacity: 0.1;
+        }
+
+        @keyframes shift {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Header */
+        header {
+            background: rgba(3, 15, 40, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-light), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .logo-tagline {
+            font-size: 0.9rem;
+            color: rgba(240, 248, 255, 0.7);
+            border-left: 2px solid var(--accent-blue);
+            padding-left: 1rem;
+            margin-left: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: var(--secondary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 10rem;
+            padding-bottom: 6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: rgba(3, 15, 40, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, var(--medium-blue) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: pulse 10s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0.2;
+            }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-light) 30%, var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(240, 248, 255, 0.9);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 2rem;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+            box-shadow: 0 5px 15px rgba(49, 113, 216, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #4080e6;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(49, 113, 216, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .btn-outline:hover {
+            background: rgba(49, 113, 216, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(49, 113, 216, 0.2);
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Features */
+        .features {
+            padding: 6rem 0;
+            background: linear-gradient(to bottom, rgba(3, 15, 40, 1), rgba(10, 34, 80, 0.9));
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-light), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-title p {
+            color: rgba(240, 248, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .features-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(10, 34, 80, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(49, 113, 216, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: rgba(49, 113, 216, 0.3);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(49, 113, 216, 0.1), transparent);
+            z-index: -1;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-accent);
+            background: rgba(5, 216, 232, 0.1);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            position: relative;
+            display: inline-block;
+        }
+
+        .feature-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        .feature-card p {
+            color: rgba(240, 248, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .learn-more {
+            color: var(--secondary-accent);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .learn-more i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .learn-more:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 6rem 0;
+            background: linear-gradient(to bottom, rgba(10, 34, 80, 0.9), rgba(3, 15, 40, 1));
+        }
+
+        .categories-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: rgba(10, 34, 80, 0.4);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(49, 113, 216, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+            border-color: rgba(49, 113, 216, 0.3);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--secondary-accent);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .category-icon {
+            color: var(--secondary-accent);
+            font-size: 2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .category-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .category-card ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-card li {
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: center;
+            color: rgba(240, 248, 255, 0.8);
+        }
+
+        .category-card li i {
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+
+        .category-card .more {
+            color: var(--secondary-accent);
+            margin-top: 1rem;
+            display: block;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(3, 15, 40, 0.95);
+            padding: 4rem 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-blue), transparent);
+        }
+
+        .footer-container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-light), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(240, 248, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(49, 113, 216, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h4 {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .footer-links h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: var(--accent-blue);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(240, 248, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-accent);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 3rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(240, 248, 255, 0.1);
+            width: 90%;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            color: rgba(240, 248, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom p {
+            margin-bottom: 1rem;
+        }
+
+        .powered-by {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .powered-by span {
+            margin: 0 0.5rem;
+        }
+
+        .maelyn-group {
+            color: var(--secondary-accent);
+            text-decoration: none;
+            position: relative;
+        }
+
+        /* How to use section */
+        .how-to-use {
+            padding: 6rem 0;
+            background: linear-gradient(to bottom, rgba(10, 34, 80, 0.9), rgba(3, 15, 40, 1));
+        }
+
+        .code-example {
+            background: rgba(3, 15, 40, 0.7);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 3rem;
+            border: 1px solid rgba(49, 113, 216, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            width: 90%;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .code-example pre {
+            color: #f8f8f2;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-example .comment {
+            color: #6272a4;
+        }
+
+        .code-example .keyword {
+            color: #ff79c6;
+        }
+
+        .code-example .string {
+            color: #f1fa8c;
+        }
+
+        .code-example .method {
+            color: #50fa7b;
+        }
+
+        .code-example .property {
+            color: #8be9fd;
+        }
+
+        .code-tag {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .code-tag .language {
+            background: var(--accent-blue);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .code-tag .copy-btn {
+            background: transparent;
+            border: none;
+            color: rgba(240, 248, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .code-tag .copy-btn:hover {
+            color: var(--secondary-accent);
+        }
+
+        .code-tag .copy-btn i {
+            margin-left: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo-tagline {
+                display: none;
+            }
+
+            header {
+                padding: 1rem 0;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .feature-card, .category-card {
+                min-width: 100%;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+
+            .code-example {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        #menu-toggle {
+            display: none;
+        }
+
+        .menu-icon {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(3, 15, 40, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-200%);
+                transition: transform 0.4s ease;
+                z-index: 999;
+                border-bottom: 1px solid rgba(49, 113, 216, 0.2);
+            }
+
+            #menu-toggle:checked ~ .nav-links {
+                transform: translateY(0);
+            }
+
+            .menu-icon {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="animated-bg"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">Maelyn API</div>
+                <div class="logo-tagline">Free REST API for Bots</div>
+            </div>
+            <input type="checkbox" id="menu-toggle">
+            <label for="menu-toggle" class="menu-icon">
+                <i class="fas fa-bars"></i>
+            </label>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#categories">API Categories</a>
+                <a href="#how-to-use">How to Use</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Free REST API for Your Bot and Web Projects</h1>
+            <p>Maelyn API provides powerful, free REST API endpoints for WhatsApp, Discord, Telegram bots and web applications. Access AI chat, image generation, anime resources, downloaders, and much more.</p>
+            <div class="cta-buttons">
+                <a href="https://maelyn.tech/" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Get API Key
+                </a>
+                <a href="https://maelyn.tech/docs" class="btn btn-outline">
+                    <i class="fas fa-book"></i> Documentation
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Why Choose Maelyn API</h2>
+            <p>Powerful, free, and developer-friendly API endpoints for all your projects</p>
+        </div>
+
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>Bot Integration</h3>
+                <p>Seamlessly integrate with WhatsApp, Discord, Telegram and other messaging platforms to create feature-rich bots with minimal coding.</p>
+                <a href="https://maelyn.tech/bot-integration" class="learn-more">
+                    Learn more <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>AI Features</h3>
+                <p>Access powerful AI chat capabilities and image generation tools to create intelligent and creative applications.</p>
+                <a href="https://maelyn.tech/ai-features" class="learn-more">
+                    Learn more <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-infinity"></i>
+                </div>
+                <h3>Unlimited Access</h3>
+                <p>No credit card required, no hidden fees. Enjoy free access to our comprehensive API library with generous usage limits.</p>
+                <a href="https://maelyn.tech/pricing" class="learn-more">
+                    Learn more <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories" id="categories">
+        <div class="section-title">
+            <h2>API Categories</h2>
+            <p>Explore our wide range of API endpoints for your applications</p>
+        </div>
+
+        <div class="categories-container">
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>AI & Chat</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> AI Chat Completion</li>
+                    <li><i class="fas fa-check-circle"></i> Text-to-Image Generation</li>
+                    <li><i class="fas fa-check-circle"></i> Language Translation</li>
+                    <li><i class="fas fa-check-circle"></i> Text Summarization</li>
+                </ul>
+                <span class="more">And many more...</span>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-tv"></i>
+                </div>
+                <h3>Anime & Manga</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Anime Search & Info</li>
+                    <li><i class="fas fa-check-circle"></i> Random Anime Images</li>
+                    <li><i class="fas fa-check-circle"></i> Anime Quotes</li>
+					<li><i class="fas fa-check-circle"></i> Manga Updates</li>
+                </ul>
+                <span class="more">And many more...</span>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3>Downloaders</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> YouTube Video & Audio</li>
+                    <li><i class="fas fa-check-circle"></i> Instagram Media</li>
+                    <li><i class="fas fa-check-circle"></i> TikTok No Watermark</li>
+                    <li><i class="fas fa-check-circle"></i> Facebook Video</li>
+                </ul>
+                <span class="more">And many more...</span>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>Comics & Reading</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Comic Search</li>
+                    <li><i class="fas fa-check-circle"></i> Comic Chapters</li>
+                    <li><i class="fas fa-check-circle"></i> Reading Lists</li>
+                    <li><i class="fas fa-check-circle"></i> Comic Recommendations</li>
+                </ul>
+                <span class="more">And many more...</span>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-images"></i>
+                </div>
+                <h3>Media & Images</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Image Effects & Filters</li>
+                    <li><i class="fas fa-check-circle"></i> Meme Generator</li>
+                    <li><i class="fas fa-check-circle"></i> Image Recognition</li>
+                    <li><i class="fas fa-check-circle"></i> Sticker Creation</li>
+                </ul>
+                <span class="more">And many more...</span>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3>Utilities</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> URL Shortener</li>
+                    <li><i class="fas fa-check-circle"></i> QR Code Generator</li>
+                    <li><i class="fas fa-check-circle"></i> Text-to-Speech</li>
+                    <li><i class="fas fa-check-circle"></i> Speech-to-Text</li>
+                </ul>
+                <span class="more">And many more...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+<section class="how-to-use" id="how-to-use">
+        <div class="section-title">
+            <h2>How to Use Maelyn API</h2>
+            <p>Simple integration for your applications</p>
+        </div>
+        <div class="code-example">
+            <div class="code-tag">
+                <span class="language">JavaScript</span>
+                <button class="copy-btn">Copy <i class="far fa-copy"></i></button>
+            </div>
+            <pre><span class="comment">// Example: Using Maelyn API for AI chat responses</span>
+<span class="keyword">const</span> <span class="property">axios</span> = <span class="keyword">require</span>(<span class="string">'axios'</span>);
+
+<span class="comment">// Function to get AI response</span>
+<span class="keyword">async function</span> <span class="method">getChatResponse</span>(message) {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> <span class="property">response</span> = <span class="keyword">await</span> axios.post(<span class="string">'https://api.maelyn.tech/v1/ai/chat'</span>, {
+      <span class="property">query</span>: message,
+      <span class="property">name</span>: <span class="string">'Assistant'</span>
+    }, {
+      <span class="property">headers</span>: {
+        <span class="property">'mg-apikey'</span>: <span class="string">'YOUR_API_KEY'</span>
+      }
+    });
+    
+    <span class="keyword">return</span> response.data.result;
+  } <span class="keyword">catch</span> (error) {
+    <span class="keyword">console</span>.error(<span class="string">'Error:'</span>, error.message);
+    <span class="keyword">return</span> <span class="string">'Sorry, I encountered an error.'</span>;
+  }
+}
+
+<span class="comment">// Example usage</span>
+<span class="keyword">async function</span> <span class="method">main</span>() {
+  <span class="keyword">const</span> <span class="property">userMessage</span> = <span class="string">'Hello, how are you?'</span>;
+  <span class="keyword">const</span> <span class="property">aiResponse</span> = <span class="keyword">await</span> <span class="method">getChatResponse</span>(userMessage);
+  <span class="keyword">console</span>.log(aiResponse);
+}</pre>
+        </div>
+    </section>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">Maelyn API</div>
+                <p>Free REST API service powering thousands of bots and web applications with AI, anime, comic, downloader features and more.</p>
+                <div class="social-links">
+                    <a href="https://github.com/MaelynAPI" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="footer-bottom">
+            <p class="powered-by">
+                Powered by <span><a href="https://maelyn.my.id" class="maelyn-group">Maelyn Group</a></span>
+            </p>
+            <p>&copy; <span id="current-year"></span> Maelyn API. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.getElementById('menu-toggle').checked = false;
+                }
+            });
+        });
+        
+        // Animation on scroll
+        const animateOnScroll = () => {
+            const featureCards = document.querySelectorAll('.feature-card, .category-card');
+            
+            featureCards.forEach((card, index) => {
+                const cardPosition = card.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (cardPosition < screenPosition) {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        };
+        
+        // Set initial styles for animation
+        document.querySelectorAll('.feature-card, .category-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+        });
+        
+        // Copy code function
+        document.querySelector('.copy-btn').addEventListener('click', function() {
+            const codeText = document.querySelector('.code-example pre').textContent;
+            navigator.clipboard.writeText(codeText).then(() => {
+                this.innerHTML = 'Copied! <i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    this.innerHTML = 'Copy <i class="far fa-copy"></i>';
+                }, 2000);
+            });
+        });
+        
+        // Run animations on load and scroll
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>
